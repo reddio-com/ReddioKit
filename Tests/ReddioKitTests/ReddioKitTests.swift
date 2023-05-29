@@ -1,8 +1,8 @@
-import XCTest
 @testable import ReddioKit
+import XCTest
 
 final class ReddioKitTests: XCTestCase {
-    func testSign(){
+    func testSign() {
         let result = sign(
             privateKey: "3c1e9550e66958296d11b60f8e8e7a7ad990d07fa65d5f7652c4a6c87d4e3cc",
             msgHash: "397e76d1667c4454bfb83514e120583af836f8e32a516765497823eabe16a3f",
