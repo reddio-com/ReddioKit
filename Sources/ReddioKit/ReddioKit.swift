@@ -8,7 +8,7 @@
 import ReddioCrypto
 import Foundation
 
-func sign(privateKey:String, msgHash:String, seed:String?)->Signature{
+public func sign(privateKey:String, msgHash:String, seed:String?)->Signature{
     var signDocument = ReddioCrypto.SignDocument(
         private_key: (privateKey as NSString).utf8String,
         msg_hash: (msgHash as NSString).utf8String,
@@ -18,9 +18,9 @@ func sign(privateKey:String, msgHash:String, seed:String?)->Signature{
     if seed != Optional.none {
         signDocument.seed = (seed! as NSString).utf8String
     }
-    let r =  UnsafeMutablePointer<CChar>.allocate(capacity: 65)
+    let r = UnsafeMutablePointer<CChar>.allocate(capacity: 65)
     defer {r.deallocate()}
-    let s =  UnsafeMutablePointer<CChar>.allocate(capacity: 65)
+    let s = UnsafeMutablePointer<CChar>.allocate(capacity: 65)
     defer {s.deallocate()}
 
     let result = ReddioCrypto.SignResult(r: r, s: s)
