@@ -56,3 +56,37 @@ public func getPublicKey(privateKey: String) throws -> String {
     }
     return String(cString: out)
 }
+
+public func getTransferMsgHash(
+    amount: Int64,
+    nonce: Int64,
+    senderVaultId: Int64,
+    token: String,
+    receiverVaultId: Int64,
+    receiverPublicKey: String,
+    expirationTimestamp: Int64,
+    condition: String?
+) throws -> String {
+    var transferMsg = ReddioCrypto.TransferMsg(
+        amount: (String(amount) as NSString).utf8String,
+        nonce: (String(nonce) as NSString).utf8String,
+        sender_vault_id: (String(senderVaultId) as NSString).utf8String,
+        token: (token as NSString).utf8String,
+        receiver_vault_id: (String(receiverVaultId) as NSString).utf8String,
+        receiver_public_key: (receiverPublicKey as NSString).utf8String,
+        expiration_time_stamp: (String(expirationTimestamp) as NSString).utf8String,
+        condition: nil
+    )
+    if condition != Optional.none {
+        transferMsg.condition = (condition! as NSString).utf8String
+    }
+
+    let out = UnsafeMutablePointer<CChar>.allocate(capacity: 65)
+    defer { out.deallocate() }
+    let errno = ReddioCrypto.get_transfer_msg_hash(transferMsg, out)
+    if errno != ReddioCrypto.Ok {
+        throw ReddioCryptoError.error(reason: String(cString: ReddioCrypto.explain(errno)))
+    }
+
+    return String(cString: out)
+}

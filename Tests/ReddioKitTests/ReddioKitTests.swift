@@ -32,4 +32,18 @@ final class ReddioKitTests: XCTestCase {
         )
         XCTAssertEqual(result, "77a3b314db07c45076d11f62b6f9e748a39790441823307743cf00d6597ea43")
     }
+
+    func testgetTransferMsgHash() throws {
+        let result = try getTransferMsgHash(
+            amount: 2_154_549_703_648_910_716,
+            nonce: 1,
+            senderVaultId: 34,
+            token: "3003a65651d3b9fb2eff934a4416db301afd112a8492aaf8d7297fc87dcd9f4",
+            receiverVaultId: 21,
+            receiverPublicKey: "5fa3383597691ea9d827a79e1a4f0f7949435ced18ca9619de8ab97e661020",
+            expirationTimestamp: 438_953,
+            condition: nil
+        )
+        XCTAssertEqual(result, "6366b00c218fb4c8a8b142ca482145e8513c78e00faa0de76298ba14fc37ae7")
+    }
 }
