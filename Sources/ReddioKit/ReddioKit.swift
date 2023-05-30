@@ -148,3 +148,13 @@ public func getPrivateKeyFromEthSignature(ethSignature: String) throws -> String
     }
     return String(cString: out)
 }
+
+public func getRandomPrivateKey() throws -> String {
+    let out = UnsafeMutablePointer<CChar>.allocate(capacity: STRING_MAX_SIZE)
+    defer { out.deallocate() }
+    let errno = ReddioCrypto.get_random_private_key(out)
+    if errno != ReddioCrypto.Ok {
+        throw ReddioCryptoError.error(reason: String(cString: ReddioCrypto.explain(errno)))
+    }
+    return String(cString: out)
+}
