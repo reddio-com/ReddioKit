@@ -75,4 +75,9 @@ final class ReddioKitTests: XCTestCase {
         let result = try getCancelOrderMsgHash(orderId: 233)
         XCTAssertEqual(result, "2d97ce4376a8cec568b243857eafd329fd90afca2437a3368f34884eed53fd3")
     }
+
+    func testGetPrivateKeyFromEthSignature() throws {
+        let result = try getPrivateKeyFromEthSignature(ethSignature: "21fbf0696d5e0aa2ef41a2b4ffb623bcaf070461d61cf7251c74161f82fec3a4370854bc0a34b3ab487c1bc021cd318c734c51ae29374f2beb0e6f2dd49b4bf41c")
+        XCTAssertEqual(result, "766f11e90cd7c7b43085b56da35c781f8c067ac0d578eabdceebc4886435bda")
+    }
 }

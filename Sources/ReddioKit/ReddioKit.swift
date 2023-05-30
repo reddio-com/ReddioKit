@@ -138,3 +138,13 @@ public func getCancelOrderMsgHash(orderId: Int64) throws -> String {
     }
     return String(cString: out)
 }
+
+public func getPrivateKeyFromEthSignature(ethSignature: String) throws -> String {
+    let out = UnsafeMutablePointer<CChar>.allocate(capacity: STRING_MAX_SIZE)
+    defer { out.deallocate() }
+    let errno = ReddioCrypto.get_private_key_from_eth_signature((ethSignature as NSString).utf8String, out)
+    if errno != ReddioCrypto.Ok {
+        throw ReddioCryptoError.error(reason: String(cString: ReddioCrypto.explain(errno)))
+    }
+    return String(cString: out)
+}
