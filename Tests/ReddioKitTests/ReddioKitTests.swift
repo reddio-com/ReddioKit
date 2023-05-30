@@ -33,7 +33,7 @@ final class ReddioKitTests: XCTestCase {
         XCTAssertEqual(result, "77a3b314db07c45076d11f62b6f9e748a39790441823307743cf00d6597ea43")
     }
 
-    func testgetTransferMsgHash() throws {
+    func testGetTransferMsgHash() throws {
         let result = try getTransferMsgHash(
             amount: 2_154_549_703_648_910_716,
             nonce: 1,
@@ -45,5 +45,22 @@ final class ReddioKitTests: XCTestCase {
             condition: nil
         )
         XCTAssertEqual(result, "6366b00c218fb4c8a8b142ca482145e8513c78e00faa0de76298ba14fc37ae7")
+    }
+
+    func testGetLimitOrderMsgHashWithFee() throws {
+        let result = try getLimitOrderMsgHashWithFee(
+            vaultSell: 21,
+            vaultBuy: 27,
+            amountSell: 2_154_686_749_748_910_716,
+            amountBuy: 1_470_242_115_489_520_459,
+            tokenSell: "5fa3383597691ea9d827a79e1a4f0f7989c35ced18ca9619de8ab97e661020",
+            tokenBuy: "774961c824a3b0fb3d2965f01471c9c7734bf8dbde659e0c08dca2ef18d56a",
+            nonce: 0,
+            expirationTimestamp: 438_953,
+            feeToken: "70bf591713d7cb7150523cf64add8d49fa6b61036bba9f596bd2af8e3bb86f9",
+            feeVaultId: 593_128_169,
+            feeLimit: 7
+        )
+        XCTAssertEqual(result, "2a6c0382404920ebd73c1cbc319cd38974e7e255e00394345e652b0ce2cefbd")
     }
 }

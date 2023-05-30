@@ -8,6 +8,8 @@
 import Foundation
 import ReddioCrypto
 
+public let STRING_MAX_SIZE = 65
+
 public func sign(privateKey: String, msgHash: String, seed: String?) throws -> Signature {
     var signDocument = ReddioCrypto.SignDocument(
         private_key: (privateKey as NSString).utf8String,
@@ -18,9 +20,9 @@ public func sign(privateKey: String, msgHash: String, seed: String?) throws -> S
     if seed != Optional.none {
         signDocument.seed = (seed! as NSString).utf8String
     }
-    let r = UnsafeMutablePointer<CChar>.allocate(capacity: 65)
+    let r = UnsafeMutablePointer<CChar>.allocate(capacity: STRING_MAX_SIZE)
     defer { r.deallocate() }
-    let s = UnsafeMutablePointer<CChar>.allocate(capacity: 65)
+    let s = UnsafeMutablePointer<CChar>.allocate(capacity: STRING_MAX_SIZE)
     defer { s.deallocate() }
 
     let result = ReddioCrypto.SignResult(r: r, s: s)
@@ -48,7 +50,7 @@ public func verify(publicKey: String, msgHash: String, signature: Signature) thr
 }
 
 public func getPublicKey(privateKey: String) throws -> String {
-    let out = UnsafeMutablePointer<CChar>.allocate(capacity: 65)
+    let out = UnsafeMutablePointer<CChar>.allocate(capacity: STRING_MAX_SIZE)
     defer { out.deallocate() }
     let errno = ReddioCrypto.get_public_key((privateKey as NSString).utf8String, out)
     if errno != ReddioCrypto.Ok {
@@ -81,12 +83,46 @@ public func getTransferMsgHash(
         transferMsg.condition = (condition! as NSString).utf8String
     }
 
-    let out = UnsafeMutablePointer<CChar>.allocate(capacity: 65)
+    let out = UnsafeMutablePointer<CChar>.allocate(capacity: STRING_MAX_SIZE)
     defer { out.deallocate() }
     let errno = ReddioCrypto.get_transfer_msg_hash(transferMsg, out)
     if errno != ReddioCrypto.Ok {
         throw ReddioCryptoError.error(reason: String(cString: ReddioCrypto.explain(errno)))
     }
 
+    return String(cString: out)
+}
+
+public func getLimitOrderMsgHashWithFee(
+    vaultSell: Int64,
+    vaultBuy: Int64,
+    amountSell: Int64,
+    amountBuy: Int64,
+    tokenSell: String,
+    tokenBuy: String,
+    nonce: Int64,
+    expirationTimestamp: Int64,
+    feeToken: String,
+    feeVaultId: Int64,
+    feeLimit: Int64
+) throws -> String {
+    let limitOrderMsgWithFee = ReddioCrypto.LimitOrderMsgWithFee(
+        vault_sell: (String(vaultSell) as NSString).utf8String,
+        vault_buy: (String(vaultBuy) as NSString).utf8String,
+        amount_sell: (String(amountSell) as NSString).utf8String,
+        amount_buy: (String(amountBuy) as NSString).utf8String,
+        token_sell: (tokenSell as NSString).utf8String,
+        token_buy: (tokenBuy as NSString).utf8String,
+        nonce: (String(nonce) as NSString).utf8String,
+        expiration_time_stamp: (String(expirationTimestamp) as NSString).utf8String,
+        fee_token: (feeToken as NSString).utf8String,
+        fee_vault_id: (String(feeVaultId) as NSString).utf8String,
+        fee_limit: (String(feeLimit) as NSString).utf8String
+    )
+    let out = UnsafeMutablePointer<CChar>.allocate(capacity: STRING_MAX_SIZE)
+    let errno = ReddioCrypto.get_limit_order_msg_hash_with_fee(limitOrderMsgWithFee, out)
+    if errno != ReddioCrypto.Ok {
+        throw ReddioCryptoError.error(reason: String(cString: ReddioCrypto.explain(errno)))
+    }
     return String(cString: out)
 }
