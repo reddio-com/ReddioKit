@@ -1,7 +1,14 @@
+import ReddioCrypto
 @testable import ReddioKit
 import XCTest
 
 final class ReddioKitTests: XCTestCase {
+    func testExplainError() {
+        let cstring = ReddioCrypto.explain(ReddioCrypto.Ok)
+        let result = String(cString: cstring!)
+        XCTAssertEqual(result, "ok")
+    }
+
     func testSign() throws {
         let result = try sign(
             privateKey: "3c1e9550e66958296d11b60f8e8e7a7ad990d07fa65d5f7652c4a6c87d4e3cc",
@@ -62,5 +69,10 @@ final class ReddioKitTests: XCTestCase {
             feeLimit: 7
         )
         XCTAssertEqual(result, "2a6c0382404920ebd73c1cbc319cd38974e7e255e00394345e652b0ce2cefbd")
+    }
+
+    func testGetCancelOrderMsgHash() throws {
+        let result = try getCancelOrderMsgHash(orderId: 233)
+        XCTAssertEqual(result, "2d97ce4376a8cec568b243857eafd329fd90afca2437a3368f34884eed53fd3")
     }
 }

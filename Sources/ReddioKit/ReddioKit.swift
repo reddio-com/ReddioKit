@@ -120,7 +120,19 @@ public func getLimitOrderMsgHashWithFee(
         fee_limit: (String(feeLimit) as NSString).utf8String
     )
     let out = UnsafeMutablePointer<CChar>.allocate(capacity: STRING_MAX_SIZE)
+    defer { out.deallocate() }
     let errno = ReddioCrypto.get_limit_order_msg_hash_with_fee(limitOrderMsgWithFee, out)
+    if errno != ReddioCrypto.Ok {
+        throw ReddioCryptoError.error(reason: String(cString: ReddioCrypto.explain(errno)))
+    }
+    return String(cString: out)
+}
+
+public func getCancelOrderMsgHash(orderId: Int64) throws -> String {
+    let cancelOrderMsg = ReddioCrypto.CancelOrderMsg(order_id: (String(orderId) as NSString).utf8String)
+    let out = UnsafeMutablePointer<CChar>.allocate(capacity: STRING_MAX_SIZE)
+    defer { out.deallocate() }
+    let errno = ReddioCrypto.get_cancel_order_msg_hash(cancelOrderMsg, out)
     if errno != ReddioCrypto.Ok {
         throw ReddioCryptoError.error(reason: String(cString: ReddioCrypto.explain(errno)))
     }
