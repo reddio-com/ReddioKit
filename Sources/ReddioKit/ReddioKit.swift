@@ -30,7 +30,7 @@ public func sign(privateKey: String, msgHash: String, seed: String?) throws -> S
     if errno != ReddioCrypto.Ok {
         throw ReddioCryptoError.error(reason: String(cString: ReddioCrypto.explain(errno)))
     }
-    return Signature(r: String(cString: result.r), s: String(cString: result.s))
+    return Signature(r: "0x" + String(cString: result.r), s: "0x" + String(cString: result.s))
 }
 
 public func verify(publicKey: String, msgHash: String, signature: Signature) throws -> Bool {
