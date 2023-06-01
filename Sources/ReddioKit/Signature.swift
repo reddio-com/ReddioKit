@@ -6,6 +6,6 @@
 //
 
 public struct Signature {
-    var r: String
-    var s: String
+    public var r: String
+    public var s: String
 }
