@@ -1,0 +1,4 @@
+module ReddioCrypto {
+    header "reddio.h"
+    export *
+}
